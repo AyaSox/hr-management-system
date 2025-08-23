@@ -7,42 +7,51 @@ using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-builder.Logging.AddDebug();
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-// Configure connection string
+// Configure connection string - use in-memory for demo if needed
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Domain DB with optimized settings
-builder.Services.AddDbContext<AppDbContext>(options =>
+// For Azure demo - use in-memory database if SQL connection fails
+if (builder.Environment.IsProduction() && string.IsNullOrEmpty(connectionString))
 {
-    options.UseSqlServer(connectionString, sqlOptions =>
-    {
-        sqlOptions.CommandTimeout(30); // Set timeout
-        sqlOptions.EnableRetryOnFailure(); // Auto retry on failure
-    });
+    // Use in-memory database for demo
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseInMemoryDatabase("HRManagementDB"));
     
-    // Only enable sensitive data logging in development
-    if (builder.Environment.IsDevelopment())
-    {
-        options.EnableSensitiveDataLogging();
-    }
-});
-
-// Identity DB with same optimizations
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseInMemoryDatabase("IdentityDB"));
+}
+else
 {
-    options.UseSqlServer(connectionString, sqlOptions =>
+    // Domain DB with optimized settings
+    builder.Services.AddDbContext<AppDbContext>(options =>
     {
-        sqlOptions.CommandTimeout(30);
-        sqlOptions.EnableRetryOnFailure();
+        options.UseSqlServer(connectionString, sqlOptions =>
+        {
+            sqlOptions.CommandTimeout(30); // Set timeout
+            sqlOptions.EnableRetryOnFailure(); // Auto retry on failure
+        });
+        
+        // Only enable sensitive data logging in development
+        if (builder.Environment.IsDevelopment())
+        {
+            options.EnableSensitiveDataLogging();
+        }
     });
-});
+
+    // Identity DB with same optimizations
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    {
+        options.UseSqlServer(connectionString, sqlOptions =>
+        {
+            sqlOptions.CommandTimeout(30);
+            sqlOptions.EnableRetryOnFailure();
+        });
+    });
+}
 
 // Configure Identity with optimized settings
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -98,25 +107,28 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Optimize role seeding - run in background
-_ = Task.Run(async () =>
+// Ensure database and seed data
+using (var scope = app.Services.CreateScope())
 {
     try
     {
-        using var scope = app.Services.CreateScope();
+        var appContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var identityContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        
+        // Ensure databases are created
+        await appContext.Database.EnsureCreatedAsync();
+        await identityContext.Database.EnsureCreatedAsync();
+        
+        // Seed roles and admin user
         await RoleSeeder.SeedAsync(scope.ServiceProvider);
         
-        // Seed demo data if in development
-        if (app.Environment.IsDevelopment())
-        {
-            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            await DemoDataSeeder.SeedAsync(context);
-        }
+        // Seed demo data
+        await DemoDataSeeder.SeedAsync(appContext);
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Background seeding error: {ex.Message}");
+        Console.WriteLine($"Database initialization error: {ex.Message}");
     }
-});
+}
 
 app.Run();
