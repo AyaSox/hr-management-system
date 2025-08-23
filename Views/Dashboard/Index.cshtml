@@ -1,0 +1,133 @@
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Dashboard";
+    var deptLabels = JsonSerializer.Serialize(ViewBag.DeptLabels);
+    var deptCounts = JsonSerializer.Serialize(ViewBag.DeptCounts);
+    var genders = JsonSerializer.Serialize(ViewBag.Genders);
+    var genderCounts = JsonSerializer.Serialize(ViewBag.GenderCounts);
+}
+
+<h2 class="mb-4">HR Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card p-3 shadow-sm">
+            <div class="h6">Total Employees</div>
+            <div class="display-6 text-primary">@ViewBag.TotalEmployees</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 shadow-sm">
+            <div class="h6">Departments</div>
+            <div class="display-6 text-success">@ViewBag.TotalDepartments</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 shadow-sm">
+            <div class="h6">Average Annual Salary</div>
+            <div class="display-6 text-info">@String.Format("{0:C}", ViewBag.AvgSalary)</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card p-4 shadow-sm mb-4">
+            <h5 class="card-title">Employees per Department</h5>
+            <div style="height: 300px;">
+                <canvas id="deptChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-4 shadow-sm">
+            <h5 class="card-title">Employee Gender Distribution</h5>
+            <div style="height: 300px;">
+                <canvas id="genderChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Employees per Department (bar)
+        new Chart(document.getElementById('deptChart').getContext('2d'), {
+            type: 'bar',
+            data: { 
+                labels: @Html.Raw(deptLabels), 
+                datasets: [{ 
+                    label: 'Employees', 
+                    data: @Html.Raw(deptCounts),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }] 
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { 
+                        display: false 
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: { 
+                    y: { 
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45
+                        }
+                    }
+                },
+                layout: {
+                    padding: 10
+                }
+            }
+        });
+
+        // Gender breakdown (pie)
+        new Chart(document.getElementById('genderChart').getContext('2d'), {
+            type: 'doughnut',
+            data: { 
+                labels: @Html.Raw(genders), 
+                datasets: [{ 
+                    data: @Html.Raw(genderCounts),
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 205, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }] 
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                },
+                layout: {
+                    padding: 10
+                }
+            }
+        });
+    </script>
+}

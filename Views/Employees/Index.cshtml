@@ -1,0 +1,112 @@
+@model X.PagedList.IPagedList<HRManagementSystem.Models.Employee>
+@using X.PagedList.Mvc.Core
+
+@{
+    ViewData["Title"] = "Employees";
+    var currentSearchString = Context.Request.Query["searchString"].ToString();
+    var currentDepartmentId = Context.Request.Query["departmentId"].ToString();
+    var currentSortOrder = Context.Request.Query["sortOrder"].ToString();
+}
+
+<h1>Employees</h1>
+
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+    <a asp-action="ExportExcel" class="btn btn-success btn-sm">Export Excel</a>
+    <a asp-action="ExportPdf" class="btn btn-danger btn-sm">Export PDF</a>
+</div>
+
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <input name="searchString" class="form-control" placeholder="Search name or email"
+                   value="@currentSearchString" />
+        </div>
+        <div class="col-md-4">
+            <select name="departmentId" class="form-select">
+                <option value="">All Departments</option>
+                @foreach (var d in (IEnumerable<HRManagementSystem.Models.Department>)ViewBag.Departments)
+                {
+                    var isSelected = currentDepartmentId == d.DepartmentId.ToString();
+                    <option value="@d.DepartmentId" selected="@isSelected">
+                        @d.Name
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-primary">Filter</button>
+            <a asp-action="Index" class="btn btn-secondary">Clear</a>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Photo</th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSort"
+                   asp-route-searchString="@currentSearchString"
+                   asp-route-departmentId="@currentDepartmentId">Name</a>
+            </th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Annual Salary</th>
+            <th>Gender</th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.DateSort"
+                   asp-route-searchString="@currentSearchString"
+                   asp-route-departmentId="@currentDepartmentId">Date Hired</a>
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ProfilePicturePath))
+                    {
+                        <img src="@item.ProfilePicturePath" width="48" height="48" style="object-fit:cover;border-radius:50%" />
+                    }
+                    else
+                    {
+                        <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width:48px;height:48px;color:white">
+                            @item.FullName.Substring(0, 1).ToUpper()
+                        </div>
+                    }
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.FullName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td>@Html.DisplayFor(modelItem => item.Department.Name)</td>
+                <td>@item.Salary.ToString("C")</td>
+                <td>@Html.DisplayFor(modelItem => item.Gender)</td>
+                <td>@item.DateHired.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.EmployeeId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.EmployeeId" class="btn btn-info btn-sm">Details</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.EmployeeId" class="btn btn-danger btn-sm">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-center">
+    @Html.PagedListPager(Model, page => Url.Action("Index", new {
+        page,
+        sortOrder = currentSortOrder,
+        searchString = currentSearchString,
+        departmentId = currentDepartmentId
+    }))
+</div>
+
+<p>
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+    (Showing @Model.Count of @Model.TotalItemCount employees)
+</p>

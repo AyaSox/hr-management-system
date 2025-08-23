@@ -1,0 +1,66 @@
+@model HRManagementSystem.Models.Employee
+
+@{
+    ViewData["Title"] = "Employee Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Employee</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-8">
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.FullName)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.FullName)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.DateHired)
+                </dt>
+                <dd class="col-sm-9">
+                    @Model.DateHired.ToShortDateString()
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Salary)
+                </dt>
+                <dd class="col-sm-9">
+                    @Model.Salary.ToString("C")
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Gender)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Gender)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Department)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Department.Name)
+                </dd>
+            </dl>
+        </div>
+        <div class="col-md-4">
+            @if (!string.IsNullOrEmpty(Model.ProfilePicturePath))
+            {
+                <div class="text-center">
+                    <img src="@Model.ProfilePicturePath" class="img-fluid rounded" style="max-width: 200px;" alt="Profile Picture" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.EmployeeId" class="btn btn-warning">Edit</a>
+    <a asp-action="Index">Back to List</a>
+</div>

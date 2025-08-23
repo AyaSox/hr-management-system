@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "HR Management System";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to HR Management System</h1>
+    <p class="lead">Comprehensive employee and department management solution</p>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">👥 Employees</h5>
+                <p class="card-text">Manage employee records, profiles, and information</p>
+                <a asp-controller="Employees" asp-action="Index" class="btn btn-primary">View Employees</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">🏢 Departments</h5>
+                <p class="card-text">Organize and manage company departments</p>
+                <a asp-controller="Departments" asp-action="Index" class="btn btn-primary">View Departments</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">📊 Dashboard</h5>
+                <p class="card-text">View analytics and reports</p>
+                <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary">View Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <h6>🎯 Key Features:</h6>
+            <ul class="mb-0">
+                <li><strong>Employee Management:</strong> Complete CRUD operations with profile pictures</li>
+                <li><strong>Department Organization:</strong> Manage company departments</li>
+                <li><strong>Advanced Search & Filtering:</strong> Find employees by name, email, or department</li>
+                <li><strong>Data Export:</strong> Export to Excel and PDF formats</li>
+                <li><strong>Role-Based Access:</strong> Admin and HR user roles</li>
+                <li><strong>Dashboard Analytics:</strong> Visual charts and statistics</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@if (!User.Identity!.IsAuthenticated)
+{
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <p class="text-muted">Please <a asp-controller="Account" asp-action="Login">login</a> to access the system features.</p>
+            <p class="text-muted">Default admin account: <strong>admin@hrsystem.com</strong> / <strong>Admin@123</strong></p>
+        </div>
+    </div>
+}
