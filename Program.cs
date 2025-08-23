@@ -14,44 +14,12 @@ builder.Services.AddRazorPages();
 // Configure connection string - use in-memory for demo if needed
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// For Azure demo - use in-memory database if SQL connection fails
-if (builder.Environment.IsProduction() && string.IsNullOrEmpty(connectionString))
-{
-    // Use in-memory database for demo
-    builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseInMemoryDatabase("HRManagementDB"));
-    
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseInMemoryDatabase("IdentityDB"));
-}
-else
-{
-    // Domain DB with optimized settings
-    builder.Services.AddDbContext<AppDbContext>(options =>
-    {
-        options.UseSqlServer(connectionString, sqlOptions =>
-        {
-            sqlOptions.CommandTimeout(30); // Set timeout
-            sqlOptions.EnableRetryOnFailure(); // Auto retry on failure
-        });
-        
-        // Only enable sensitive data logging in development
-        if (builder.Environment.IsDevelopment())
-        {
-            options.EnableSensitiveDataLogging();
-        }
-    });
+// Use in-memory database for Azure demo to avoid startup timeouts
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseInMemoryDatabase("HRManagementDB"));
 
-    // Identity DB with same optimizations
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    {
-        options.UseSqlServer(connectionString, sqlOptions =>
-        {
-            sqlOptions.CommandTimeout(30);
-            sqlOptions.EnableRetryOnFailure();
-        });
-    });
-}
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseInMemoryDatabase("IdentityDB"));
 
 // Configure Identity with optimized settings
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -90,10 +58,6 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-else
-{
-    app.UseDeveloperExceptionPage();
-}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -102,16 +66,23 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRazorPages(); // Identity UI
+app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Ensure database and seed data
-using (var scope = app.Services.CreateScope())
+// Start the app immediately - do seeding in background after startup
+app.Start();
+
+// Background seeding after startup to avoid timeout
+_ = Task.Run(async () =>
 {
+    await Task.Delay(2000); // Wait 2 seconds for app to be ready
+    
     try
     {
+        using var scope = app.Services.CreateScope();
+        
         var appContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var identityContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         
@@ -124,11 +95,13 @@ using (var scope = app.Services.CreateScope())
         
         // Seed demo data
         await DemoDataSeeder.SeedAsync(appContext);
+        
+        Console.WriteLine("? Background seeding completed successfully!");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Database initialization error: {ex.Message}");
+        Console.WriteLine($"? Background seeding error: {ex.Message}");
     }
-}
+});
 
-app.Run();
+await app.WaitForShutdownAsync();
