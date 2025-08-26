@@ -22,11 +22,11 @@ Advanced Features
 -  **REST API Endpoints** - Full JSON API for integration
 -  **Audit Trail System** - Track all system changes with user attribution
 -  **Data Export** - Excel and PDF export capabilities
-- ? **Dashboard Analytics** - Visual charts and statistics
-- ? **Profile Picture Uploads** - Employee photo management
-- ? **South African Localization** - ZAR currency formatting
+- **Dashboard Analytics** - Visual charts and statistics
+- **Profile Picture Uploads** - Employee photo management
+- **South African Localization** - ZAR currency formatting
 
-## ?? **Technology Stack**
+**Technology Stack**
 
 | Technology | Purpose |
 |------------|---------|
@@ -39,7 +39,7 @@ Advanced Features
 | **ClosedXML** | Excel export |
 | **QuestPDF** | PDF generation |
 
-## ?? **Getting Started**
+**Getting Started**
 
 ### **Prerequisites**
 - .NET 8 SDK
@@ -75,7 +75,7 @@ Advanced Features
    Navigate to: https://localhost:5193
    ```
 
-## ?? **Default Login Credentials**
+**Default Login Credentials**
 
 | Role | Email | Password |
 |------|-------|----------|
@@ -83,7 +83,7 @@ Advanced Features
 
 *Admin users can delete records and access all features*
 
-## ?? **API Endpoints**
+**API Endpoints**
 
 ### **Employees API**
 - `GET /api/EmployeesApi` - Get all employees
@@ -101,7 +101,7 @@ Advanced Features
 
 *All API endpoints require authentication*
 
-## ?? **Key Business Features**
+**Key Business Features**
 
 ### **Employee Management**
 - Complete employee lifecycle management
@@ -130,7 +130,7 @@ Advanced Features
 - Professional error handling
 - Performance optimizations
 
-## ?? **Performance Features**
+**Performance Features**
 
 - **Optimized database queries** with Entity Framework
 - **Pagination** for large datasets
@@ -138,7 +138,7 @@ Advanced Features
 - **Background processing** for role seeding
 - **Connection pooling** and retry policies
 
-## ?? **Security Features**
+**Security Features**
 
 - **Authentication** via ASP.NET Core Identity
 - **Authorization** with role-based permissions
@@ -146,7 +146,7 @@ Advanced Features
 - **Input validation** and sanitization
 - **Secure file uploads** with type checking
 
-## ?? **User Experience**
+**User Experience**
 
 - **Responsive design** works on all devices
 - **Intuitive navigation** with clear menu structure
@@ -154,13 +154,13 @@ Advanced Features
 - **Interactive charts** for data visualization
 - **Fast search and filtering** capabilities
 
-## ?? **Localization**
+**Localization**
 
 - **South African market focus** with ZAR currency
 - **Date formatting** appropriate for SA
 - **Professional terminology** suitable for local businesses
 
-## ?? **Screenshots**
+**Screenshots**
 
 ### Dashboard Analytics
 ![Dashboard](https://via.placeholder.com/800x400/0066cc/ffffff?text=Dashboard+with+Charts+and+Statistics)
@@ -173,20 +173,20 @@ Advanced Features
 
 ---
 
-## ????? **Developer**
+**Developer**
 
 **[Your Name]**  
 *Full-Stack .NET Developer*  
-?? [your-email@example.com]  
-?? [LinkedIn Profile]  
-?? [GitHub Profile]
+[your-email@example.com]  
+[LinkedIn Profile]  
+[GitHub Profile]
 
 ---
 
-## ?? **License**
+**License**
 
 This project is available for portfolio demonstration purposes.
 
 ---
 
-*Built with ?? for the South African job market*
+*Built with ❤️ for the South African job market*
