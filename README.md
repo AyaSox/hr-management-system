@@ -19,9 +19,9 @@ Employee Management - Complete CRUD operations with profile pictures
 - Role-Based Security - Admin and HR user permissions
 
 Advanced Features
-- ? **REST API Endpoints** - Full JSON API for integration
-- ? **Audit Trail System** - Track all system changes with user attribution
-- ? **Data Export** - Excel and PDF export capabilities
+-  **REST API Endpoints** - Full JSON API for integration
+-  **Audit Trail System** - Track all system changes with user attribution
+-  **Data Export** - Excel and PDF export capabilities
 - ? **Dashboard Analytics** - Visual charts and statistics
 - ? **Profile Picture Uploads** - Employee photo management
 - ? **South African Localization** - ZAR currency formatting
