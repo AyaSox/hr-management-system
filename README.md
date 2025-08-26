@@ -1,4 +1,4 @@
-# ?? HR Management System
+HR Management System
 
 ![.NET](https://img.shields.io/badge/.NET-8.0-purple)
 ![C#](https://img.shields.io/badge/C%23-12.0-blue)
@@ -9,16 +9,16 @@
 
 A comprehensive Human Resources Management System built with **ASP.NET Core 8**, featuring employee management, department organization, role-based security, and advanced reporting capabilities.
 
-## ?? **Key Features**
+Key Features
 
-### **Core Functionality**
-- ? **Employee Management** - Complete CRUD operations with profile pictures
-- ? **Department Management** - Organize employees by departments
-- ? **Advanced Search & Filtering** - Find employees by name, email, or department
-- ? **Data Pagination** - Efficient handling of large datasets
-- ? **Role-Based Security** - Admin and HR user permissions
+Core Functionality
+Employee Management - Complete CRUD operations with profile pictures
+- Department Management - Organize employees by departments
+- Advanced Search & Filtering - Find employees by name, email, or department
+- Data Pagination - Efficient handling of large datasets
+- Role-Based Security - Admin and HR user permissions
 
-### **Advanced Features**
+Advanced Features
 - ? **REST API Endpoints** - Full JSON API for integration
 - ? **Audit Trail System** - Track all system changes with user attribution
 - ? **Data Export** - Excel and PDF export capabilities
