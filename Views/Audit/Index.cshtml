@@ -8,97 +8,128 @@
 <h1><i class="fas fa-history"></i> System Audit Trail</h1>
 <p class="text-muted">Track all system changes and user activities</p>
 
-<form asp-action="Index" method="get" class="mb-4">
-    <div class="row g-2">
-        <div class="col-md-4">
-            <input name="searchUser" class="form-control" placeholder="Search by user"
-                   value="@ViewBag.SearchUser" />
-        </div>
-        <div class="col-md-4">
-            <select name="searchTable" class="form-select">
-                <option value="">All Tables</option>
-                <option value="Employees" selected="@(ViewBag.SearchTable == "Employees")">Employees</option>
-                <option value="Departments" selected="@(ViewBag.SearchTable == "Departments")">Departments</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <button class="btn btn-primary">Filter</button>
-            <a asp-action="Index" class="btn btn-secondary">Clear</a>
-        </div>
+<div class="card mb-3">
+    <div class="card-header">
+        <h5 class="mb-0">Search & Filter Audit Records</h5>
     </div>
-</form>
+    <div class="card-body">
+        <form asp-action="Index" method="get">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <label class="form-label">Search by User</label>
+                    <input name="searchUser" class="form-control" placeholder="Search by user"
+                           value="@ViewBag.SearchUser" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Filter by Table</label>
+                    <select name="searchTable" class="form-select">
+                        <option value="">All Tables</option>
+                        <option value="Employees" selected="@(ViewBag.SearchTable == "Employees")">Employees</option>
+                        <option value="Departments" selected="@(ViewBag.SearchTable == "Departments")">Departments</option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="btn-group w-100">
+                        <button class="btn btn-primary">Filter</button>
+                        <a asp-action="Index" class="btn btn-secondary">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="d-flex justify-content-end mb-3 gap-2">
+    <a class="btn btn-outline-secondary"
+       asp-action="ExportCsv"
+       asp-route-searchUser="@ViewBag.SearchUser"
+       asp-route-searchTable="@ViewBag.SearchTable">
+        <i class="fas fa-file-csv"></i> Download CSV
+    </a>
+    <a class="btn btn-outline-success"
+       asp-action="ExportExcel"
+       asp-route-searchUser="@ViewBag.SearchUser"
+       asp-route-searchTable="@ViewBag.SearchTable">
+        <i class="fas fa-file-excel"></i> Download Excel
+    </a>
+</div>
 
 <div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Audit Log Records</h5>
+    </div>
     <div class="card-body">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Timestamp</th>
-                    <th>User</th>
-                    <th>Action</th>
-                    <th>Table</th>
-                    <th>Record ID</th>
-                    <th>Changes</th>
-                    <th>Details</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-light">
                     <tr>
-                        <td>
-                            <small>@item.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</small>
-                        </td>
-                        <td>
-                            <span class="badge bg-info">@item.UserName</span>
-                        </td>
-                        <td>
-                            @if (item.Action == "INSERT")
-                            {
-                                <span class="badge bg-success">CREATE</span>
-                            }
-                            else if (item.Action == "UPDATE")
-                            {
-                                <span class="badge bg-warning">UPDATE</span>
-                            }
-                            else if (item.Action == "DELETE")
-                            {
-                                <span class="badge bg-danger">DELETE</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-secondary">@item.Action</span>
-                            }
-                        </td>
-                        <td>@item.TableName</td>
-                        <td>@item.RecordId</td>
-                        <td>
-                            @if (!string.IsNullOrEmpty(item.Changes))
-                            {
-                                <small class="text-muted">@item.Changes</small>
-                            }
-                            else
-                            {
-                                <small class="text-muted">-</small>
-                            }
-                        </td>
-                        <td>
-                            <a asp-action="Details" asp-route-id="@item.AuditLogId" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                        </td>
+                        <th style="color: black;">Timestamp</th>
+                        <th style="color: black;">User</th>
+                        <th style="color: black;">Action</th>
+                        <th style="color: black;">Table</th>
+                        <th style="color: black;">Record ID</th>
+                        <th style="color: black;">Changes</th>
+                        <th style="color: black;">Details</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="color: black;">
+                                <small>@item.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</small>
+                            </td>
+                            <td style="color: black;">
+                                <span class="text-dark fw-semibold">@item.UserName</span>
+                            </td>
+                            <td style="color: black;">
+                                @if (item.Action == "INSERT")
+                                {
+                                    <span class="badge bg-success">CREATE</span>
+                                }
+                                else if (item.Action == "UPDATE")
+                                {
+                                    <span class="badge bg-warning">UPDATE</span>
+                                }
+                                else if (item.Action == "DELETE")
+                                {
+                                    <span class="badge bg-danger">DELETE</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@item.Action</span>
+                                }
+                            </td>
+                            <td style="color: black;">@item.TableName</td>
+                            <td style="color: black;">@item.RecordId</td>
+                            <td style="color: black;">
+                                @if (!string.IsNullOrEmpty(item.Changes))
+                                {
+                                    <small class="text-dark">@item.Changes</small>
+                                }
+                                else
+                                {
+                                    <small class="text-muted">-</small>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.AuditLogId" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
 
-        @if (!Model.Any())
-        {
-            <div class="text-center py-4">
-                <i class="fas fa-search" style="font-size: 3rem; color: #ccc;"></i>
-                <p class="text-muted mt-2">No audit records found</p>
-            </div>
-        }
+            @if (!Model.Any())
+            {
+                <div class="text-center py-4">
+                    <i class="fas fa-search" style="font-size: 3rem; color: #ccc;"></i>
+                    <p class="text-muted mt-2">No audit records found</p>
+                </div>
+            }
+        </div>
     </div>
 </div>
 

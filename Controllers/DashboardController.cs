@@ -1,7 +1,8 @@
-using HRManagementSystem.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using HRManagementSystem.Data;
 using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
 
 namespace HRManagementSystem.Controllers
 {
@@ -9,32 +10,112 @@ namespace HRManagementSystem.Controllers
     public class DashboardController : Controller
     {
         private readonly AppDbContext _context;
-        public DashboardController(AppDbContext context) => _context = context;
+
+        public DashboardController(AppDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task<IActionResult> Index()
         {
-            var perDept = await _context.Employees
-                .Include(e => e.Department)
-                .GroupBy(e => e.Department!.Name)
-                .Select(g => new { Dept = g.Key, Count = g.Count() })
+            var today = DateTime.Today;
+
+            // Summary statistics
+            var totalEmployees = await _context.Employees.AsNoTracking().CountAsync();
+            var totalDepartments = await _context.Departments.AsNoTracking().CountAsync();
+            var avgSalaryDecimal = await _context.Employees.AsNoTracking().AverageAsync(e => e.Salary);
+
+            ViewBag.TotalEmployees = totalEmployees;
+            ViewBag.TotalDepartments = totalDepartments;
+            ViewBag.AvgSalary = avgSalaryDecimal.ToString("C2", CultureInfo.CurrentCulture);
+
+            // Employees per Department
+            var deptData = await _context.Departments
+                .AsNoTracking()
+                .Include(d => d.Employees)
+                .Select(d => new { d.Name, Count = d.Employees.Count })
                 .ToListAsync();
 
-            ViewBag.DeptLabels = perDept.Select(x => x.Dept).ToList();
-            ViewBag.DeptCounts = perDept.Select(x => x.Count).ToList();
+            ViewBag.DeptLabels = deptData.Select(d => d.Name).ToArray();
+            ViewBag.DeptCounts = deptData.Select(d => d.Count).ToArray();
 
-            var gender = await _context.Employees
+            // Gender distribution
+            var genderData = await _context.Employees
+                .AsNoTracking()
+                .Where(e => !string.IsNullOrEmpty(e.Gender))
                 .GroupBy(e => e.Gender)
                 .Select(g => new { Gender = g.Key, Count = g.Count() })
                 .ToListAsync();
 
-            ViewBag.Genders = gender.Select(x => x.Gender ?? "Unknown").ToList();
-            ViewBag.GenderCounts = gender.Select(x => x.Count).ToList();
+            ViewBag.Genders = genderData.Select(g => g.Gender).ToArray();
+            ViewBag.GenderCounts = genderData.Select(g => g.Count).ToArray();
 
-            ViewBag.TotalEmployees = await _context.Employees.CountAsync();
-            ViewBag.TotalDepartments = await _context.Departments.CountAsync();
-            ViewBag.AvgSalary = await _context.Employees.AnyAsync()
-                ? await _context.Employees.AverageAsync(e => e.Salary)
-                : 0;
+            // Recent hires (last 30 days)
+            var recentHiresQuery = _context.Employees
+                .AsNoTracking()
+                .Where(e => e.DateHired >= DateTime.Now.AddDays(-30))
+                .Include(e => e.Department);
+
+            ViewBag.RecentHiresCount = await recentHiresQuery.CountAsync();
+            ViewBag.RecentHires = await recentHiresQuery
+                .OrderByDescending(e => e.DateHired)
+                .Take(5)
+                .ToListAsync();
+
+            // Upcoming birthdays (next 30 days) – compute client-side compatible
+            var upcomingBirthdays = await _context.Employees
+                .AsNoTracking()
+                .Where(e => e.DateOfBirth.HasValue)
+                .Include(e => e.Department)
+                .ToListAsync();
+
+            var birthdayList = upcomingBirthdays
+                .Where(e => e.HasUpcomingBirthday)
+                .OrderBy(e =>
+                {
+                    var nextBirthday = new DateTime(today.Year, e.DateOfBirth!.Value.Month, e.DateOfBirth.Value.Day);
+                    if (nextBirthday < today) nextBirthday = nextBirthday.AddYears(1);
+                    return nextBirthday;
+                })
+                .Take(5)
+                .ToList();
+
+            ViewBag.UpcomingBirthdays = birthdayList;
+
+            // Upcoming anniversaries (next 30 days)
+            var employeeAnniversaries = await _context.Employees
+                .AsNoTracking()
+                .Include(e => e.Department)
+                .ToListAsync();
+
+            var anniversaryList = employeeAnniversaries
+                .Where(e =>
+                {
+                    var thisYearAnniversary = new DateTime(today.Year, e.DateHired.Month, e.DateHired.Day);
+                    if (thisYearAnniversary < today) thisYearAnniversary = thisYearAnniversary.AddYears(1);
+                    var days = (thisYearAnniversary - today).Days;
+                    return days <= 30 && days >= 0;
+                })
+                .OrderBy(e =>
+                {
+                    var thisYearAnniversary = new DateTime(today.Year, e.DateHired.Month, e.DateHired.Day);
+                    if (thisYearAnniversary < today) thisYearAnniversary = thisYearAnniversary.AddYears(1);
+                    return thisYearAnniversary;
+                })
+                .Take(5)
+                .ToList();
+
+            ViewBag.UpcomingAnniversaries = anniversaryList;
+
+            // Employee status breakdown
+            var statusData = await _context.Employees
+                .AsNoTracking()
+                .GroupBy(e => e.Status)
+                .Select(g => new { Status = g.Key.ToString(), Count = g.Count() })
+                .ToListAsync();
+
+            ViewBag.StatusLabels = statusData.Select(s => s.Status).ToArray();
+            ViewBag.StatusCounts = statusData.Select(s => s.Count).ToArray();
 
             return View();
         }

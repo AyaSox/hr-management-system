@@ -7,37 +7,73 @@
 ![License](https://img.shields.io/badge/License-Portfolio-green)
 ![South Africa](https://img.shields.io/badge/Market-South%20Africa-green)
 
-A comprehensive Human Resources Management System built with **ASP.NET Core 8**, featuring employee management, department organization, role-based security, and advanced reporting capabilities.
+A comprehensive Human Resources Management System built with **ASP.NET Core 8**, featuring advanced employee management, department organization, role-based security, and enterprise-grade reporting capabilities.
 
 ## ?? **Key Features**
 
-### **Core Functionality**
-- ? **Employee Management** - Complete CRUD operations with profile pictures
-- ? **Department Management** - Organize employees by departments
-- ? **Advanced Search & Filtering** - Find employees by name, email, or department
-- ? **Data Pagination** - Efficient handling of large datasets
-- ? **Role-Based Security** - Admin and HR user permissions
+### **Core Employee Management**
+- ? **Complete CRUD Operations** - Create, read, update, delete employees with profile pictures
+- ? **?? Employee Status Tracking** - Active, OnLeave, Inactive status management
+- ? **?? Emergency Contact System** - Safety compliance with contact information
+- ? **?? Birthday Notifications** - Automatic birthday tracking and notifications
+- ? **Advanced Search & Filtering** - Find employees by name, email, department, salary range, status
+- ? **?? Bulk Operations** - Select multiple employees for export or status updates
+- ? **Data Pagination** - Efficient handling of large datasets (5 records per page)
+
+### **Department Organization**
+- ? **Department Management** - Create and manage company departments
+- ? **Employee Assignment** - Link employees to departments with relationship tracking
+- ? **Department Analytics** - Employee counts and distribution statistics
+
+### **?? Enhanced Dashboard & Analytics**
+- ? **Visual Dashboard** - Charts and statistics with Chart.js integration
+- ? **?? Recent Hires Widget** - Track new employees hired in last 30 days
+- ? **?? Birthday Notifications Panel** - Upcoming birthdays in next 30 days
+- ? **?? Employee Status Distribution** - Visual breakdown of Active/OnLeave/Inactive
+- ? **Department Distribution Charts** - Visual representation of team structure
+- ? **Gender Analytics** - Diversity reporting and analytics
+- ? **Salary Analytics** - Average salary calculations in ZAR
 
 ### **Advanced Features**
-- ? **REST API Endpoints** - Full JSON API for integration
-- ? **Audit Trail System** - Track all system changes with user attribution
-- ? **Data Export** - Excel and PDF export capabilities
-- ? **Dashboard Analytics** - Visual charts and statistics
-- ? **Profile Picture Uploads** - Employee photo management
-- ? **South African Localization** - ZAR currency formatting
+- ? **REST API Endpoints** - Complete JSON API for external integration
+- ? **Enterprise Audit Trail** - Track all system changes with user attribution
+- ? **Data Export Capabilities** - Excel and PDF export (all employees or selected)
+- ? **?? Bulk Export** - Export selected employees to Excel with professional formatting
+- ? **File Upload System** - Profile picture management with validation
+- ? **South African Localization** - ZAR currency formatting and local conventions
+
+### **Security & Compliance**
+- ? **Role-Based Access Control** - Admin and HR user permissions
+- ? **Complete Audit Trail** - Track who changed what and when
+- ? **Secure Authentication** - ASP.NET Core Identity integration
+- ? **Input Validation** - Comprehensive data validation and sanitization
+- ? **CSRF Protection** - Security against cross-site request forgery
 
 ## ?? **Technology Stack**
 
-| Technology | Purpose |
-|------------|---------|
-| **ASP.NET Core 8** | Web framework |
-| **Entity Framework Core** | Database ORM |
-| **SQL Server LocalDB** | Database engine |
-| **ASP.NET Core Identity** | Authentication & Authorization |
-| **Bootstrap 5** | Responsive UI framework |
-| **Chart.js** | Data visualization |
-| **ClosedXML** | Excel export |
-| **QuestPDF** | PDF generation |
+| Technology | Purpose | Version |
+|------------|---------|---------|
+| **ASP.NET Core** | Web framework | 8.0 |
+| **Entity Framework Core** | Database ORM | 8.0 |
+| **SQL Server LocalDB** | Database engine | Latest |
+| **ASP.NET Core Identity** | Authentication & Authorization | 8.0 |
+| **Bootstrap** | Responsive UI framework | 5.0 |
+| **Chart.js** | Data visualization | Latest |
+| **ClosedXML** | Excel export | Latest |
+| **QuestPDF** | PDF generation | Latest |
+| **Font Awesome** | Icons and styling | 6.0 |
+
+## ?? **Live Demo**
+
+**?? Live Application:** https://hrmanagement20250823232308-hfaf9f5g2c5fcfe.canadacentral-01.azurewebsites.net  
+**?? Mobile Responsive:** Works on all devices  
+**?? Demo Login:** admin@hrsystem.com / Admin@123  
+
+**API Endpoints:**
+- **Health Check:** `GET /api/health`
+- **Employees:** `GET /api/EmployeesApi`
+- **Departments:** `GET /api/DepartmentsApi`
+- **Search:** `GET /api/EmployeesApi/search?term=sarah`
 
 ## ?? **Getting Started**
 
@@ -50,7 +86,7 @@ A comprehensive Human Resources Management System built with **ASP.NET Core 8**,
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/[your-username]/hr-management-system.git
+   git clone https://github.com/AyaSox/hr-management-system.git
    cd hr-management-system
    ```
 
@@ -61,8 +97,7 @@ A comprehensive Human Resources Management System built with **ASP.NET Core 8**,
 
 3. **Update database**
    ```bash
-   dotnet ef database update -c AppDbContext
-   dotnet ef database update -c ApplicationDbContext
+   dotnet ef database update
    ```
 
 4. **Run the application**
@@ -77,109 +112,165 @@ A comprehensive Human Resources Management System built with **ASP.NET Core 8**,
 
 ## ?? **Default Login Credentials**
 
-| Role | Email | Password |
-|------|-------|----------|
-| **Admin** | admin@hrsystem.com | Admin@123 |
+| Role | Email | Password | Permissions |
+|------|-------|----------|-------------|
+| **Admin** | admin@hrsystem.com | Admin@123 | Full system access, delete operations, audit trail |
+| **HR** | Create additional users | Custom | Employee management, no delete permissions |
 
-*Admin users can delete records and access all features*
+## ?? **API Documentation**
 
-## ?? **API Endpoints**
+### **Employee Management API**
+| Method | Endpoint | Purpose | Auth Required |
+|--------|----------|---------|---------------|
+| GET | `/api/EmployeesApi` | Get all employees | ? |
+| GET | `/api/EmployeesApi/{id}` | Get specific employee | ? |
+| POST | `/api/EmployeesApi` | Create new employee | ? |
+| PUT | `/api/EmployeesApi/{id}` | Update employee | ? |
+| DELETE | `/api/EmployeesApi/{id}` | Delete employee | Admin Only |
+| GET | `/api/EmployeesApi/search?term={searchTerm}` | Search employees | ? |
 
-### **Employees API**
-- `GET /api/EmployeesApi` - Get all employees
-- `GET /api/EmployeesApi/{id}` - Get specific employee
-- `POST /api/EmployeesApi` - Create new employee
-- `PUT /api/EmployeesApi/{id}` - Update employee
-- `DELETE /api/EmployeesApi/{id}` - Delete employee (Admin only)
-- `GET /api/EmployeesApi/search?term={searchTerm}` - Search employees
+### **Department Management API**
+| Method | Endpoint | Purpose | Auth Required |
+|--------|----------|---------|---------------|
+| GET | `/api/DepartmentsApi` | Get all departments with counts | ? |
+| GET | `/api/DepartmentsApi/{id}` | Get department with employees | ? |
+| POST | `/api/DepartmentsApi` | Create new department | ? |
+| GET | `/api/DepartmentsApi/{id}/employees` | Get department employees | ? |
 
-### **Departments API**
-- `GET /api/DepartmentsApi` - Get all departments
-- `GET /api/DepartmentsApi/{id}` - Get department with employees
-- `POST /api/DepartmentsApi` - Create new department
-- `GET /api/DepartmentsApi/{id}/employees` - Get department employees
+### **Health Monitoring API**
+| Method | Endpoint | Purpose | Auth Required |
+|--------|----------|---------|---------------|
+| GET | `/api/health` | Basic health status | ? |
+| GET | `/api/health/ready` | Application readiness | ? |
 
-*All API endpoints require authentication*
+## ?? **New Features Highlights**
 
-## ?? **Key Business Features**
+### **?? Employee Status Management**
+- Track employee status: Active, OnLeave, Inactive
+- Visual status badges in employee list
+- Filter and search by status
+- Bulk status updates with audit trail
 
-### **Employee Management**
-- Complete employee lifecycle management
-- Profile picture uploads and management
-- Department assignments
-- Salary tracking in South African Rand (ZAR)
-- Hire date tracking
+### **?? Advanced Search & Filtering**
+- **Salary Range Search:** Filter by minimum and maximum salary
+- **Multi-Criteria Filtering:** Combine name, department, salary, and status filters
+- **Enhanced Sorting:** Sort by name, salary, and hire date
+- **Persistent Filters:** Maintain filter state across pagination
 
-### **Security & Compliance**
-- Role-based access control (Admin/HR roles)
-- Complete audit trail for all changes
-- Secure authentication system
-- Input validation and sanitization
+### **?? Birthday Notification System**
+- **Upcoming Birthdays Widget:** Dashboard panel showing next 30 days
+- **Birthday Indicators:** Cake icons in employee list for upcoming birthdays
+- **Age Calculations:** Automatic age computation
+- **Smart Date Logic:** Handles year transitions and leap years
 
-### **Reporting & Analytics**
-- Visual dashboard with employee statistics
-- Department distribution charts
-- Gender diversity analytics
-- Average salary calculations
-- Excel and PDF export capabilities
+### **?? Recent Hires Tracking**
+- **Recent Hires Widget:** Dashboard showing employees hired in last 30 days
+- **Hiring Analytics:** Track recruitment patterns
+- **Quick Overview:** New team member information at a glance
 
-### **Modern Architecture**
-- Clean separation of concerns
-- RESTful API design
-- Responsive mobile-friendly interface
-- Professional error handling
-- Performance optimizations
+### **?? Emergency Contact Management**
+- **Safety Compliance:** Emergency contact name and phone number
+- **Business Requirement:** Critical information for HR departments
+- **Professional Standards:** Meets workplace safety requirements
 
-## ?? **Performance Features**
+### **?? Bulk Operations**
+- **Multi-Select Interface:** Checkbox selection for multiple employees
+- **Bulk Export:** Export selected employees to Excel
+- **Bulk Status Updates:** Change status for multiple employees simultaneously
+- **Audit Integration:** All bulk operations logged with user attribution
 
-- **Optimized database queries** with Entity Framework
-- **Pagination** for large datasets
-- **Efficient search** with database-level filtering
-- **Background processing** for role seeding
-- **Connection pooling** and retry policies
+## ?? **Business Value**
+
+### **For HR Departments**
+- **Complete Employee Lifecycle:** From hire to termination tracking
+- **Compliance Ready:** Emergency contacts, audit trails, role-based access
+- **Efficiency Tools:** Bulk operations, advanced search, data export
+- **Analytics & Reporting:** Visual dashboards, birthday tracking, hire analytics
+
+### **For Management**
+- **Business Intelligence:** Department distribution, salary analytics, status reports
+- **Decision Support:** Visual charts, trend analysis, employee statistics
+- **Operational Efficiency:** Quick search, bulk operations, automated notifications
+
+### **For IT Departments**
+- **Integration Ready:** REST APIs for connecting external systems
+- **Security Compliant:** Role-based access, audit trails, input validation
+- **Scalable Architecture:** Clean code, proper separation of concerns
+- **Modern Technology:** Latest .NET 8, cloud-ready deployment
+
+## ?? **South African Market Focus**
+
+- **Currency Support:** ZAR formatting throughout the system
+- **Local Conventions:** South African employee names and contact formats
+- **Professional Standards:** Corporate governance and compliance considerations
+- **Market Appropriate:** Salary ranges and business practices for SA market
+
+## ?? **Performance & Scalability**
+
+- **Optimized Queries:** Efficient LINQ with proper indexing
+- **Pagination:** Handle large datasets with 5 records per page
+- **Search Performance:** Database-level filtering and sorting
+- **Memory Management:** Efficient resource utilization
+- **Connection Pooling:** Optimized database connections
 
 ## ?? **Security Features**
 
-- **Authentication** via ASP.NET Core Identity
-- **Authorization** with role-based permissions
-- **CSRF protection** on all forms
-- **Input validation** and sanitization
-- **Secure file uploads** with type checking
+- **Authentication:** ASP.NET Core Identity with secure password storage
+- **Authorization:** Role-based permissions with method-level security
+- **Input Validation:** Comprehensive validation on all forms
+- **CSRF Protection:** Protection against cross-site request forgery
+- **File Upload Security:** Validated file types and size limits
+- **Audit Trail:** Complete change tracking for compliance
 
-## ?? **User Experience**
+## ?? **Deployment**
 
-- **Responsive design** works on all devices
-- **Intuitive navigation** with clear menu structure
-- **Professional styling** with Bootstrap 5
-- **Interactive charts** for data visualization
-- **Fast search and filtering** capabilities
+### **Local Development**
+- SQL Server LocalDB for development
+- Development environment with detailed logging
+- Hot reload for rapid development
 
-## ?? **Localization**
-
-- **South African market focus** with ZAR currency
-- **Date formatting** appropriate for SA
-- **Professional terminology** suitable for local businesses
+### **Azure Production**
+- Microsoft Azure App Service deployment
+- Production-optimized configuration
+- In-memory database for reliable demo
+- Professional demo data seeding
 
 ## ?? **Screenshots**
 
-### Dashboard Analytics
-![Dashboard](https://via.placeholder.com/800x400/0066cc/ffffff?text=Dashboard+with+Charts+and+Statistics)
+### **Enhanced Dashboard**
+- Recent hires widget with last 30 days
+- Birthday notifications panel
+- Employee status distribution chart
+- Interactive analytics with Chart.js
 
-### Employee Management
-![Employee List](https://via.placeholder.com/800x400/28a745/ffffff?text=Employee+Management+with+Search+and+Filters)
+### **Advanced Employee Management**
+- Multi-criteria search and filtering
+- Bulk selection and operations
+- Status badges and birthday indicators
+- Professional profile management
 
-### Professional Interface
-![Modern UI](https://via.placeholder.com/800x400/6f42c1/ffffff?text=Modern+Bootstrap+5+Interface)
+### **Modern User Interface**
+- Bootstrap 5 responsive design
+- Professional business styling
+- Interactive bulk operations
+- Mobile-optimized interface
 
 ---
 
-## ????? **Developer**
+## ????? **Developer Portfolio**
 
-**[Your Name]**  
-*Full-Stack .NET Developer*  
-?? [your-email@example.com]  
-?? [LinkedIn Profile]  
-?? [GitHub Profile]
+**Developed by:** AyaSox  
+**GitHub:** https://github.com/AyaSox/hr-management-system  
+**Live Demo:** https://hrmanagement20250823232308-hfaf9f5g2c5fcfe.canadacentral-01.azurewebsites.net  
+
+### **Skills Demonstrated**
+- **Full-Stack Development:** ASP.NET Core 8, Entity Framework, SQL Server
+- **Modern UI/UX:** Bootstrap 5, Chart.js, responsive design
+- **Cloud Deployment:** Microsoft Azure App Service
+- **API Development:** RESTful JSON endpoints
+- **Security Implementation:** Authentication, authorization, audit trails
+- **Business Logic:** Real-world HR management processes
+- **Database Design:** Proper relationships, migrations, optimization
 
 ---
 
@@ -189,4 +280,4 @@ This project is available for portfolio demonstration purposes.
 
 ---
 
-*Built with ?? for the South African job market*
+*Built with ?? for the South African job market using modern .NET technologies and enterprise-grade features.*
