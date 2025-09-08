@@ -280,4 +280,3 @@ This project is available for portfolio demonstration purposes.
 
 ---
 
-*Built with  for the South African job market using modern .NET technologies and enterprise-grade features.*
