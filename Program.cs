@@ -198,8 +198,9 @@ app.Lifetime.ApplicationStarted.Register(() =>
             var identityContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var jobs = scope.ServiceProvider.GetRequiredService<IBackgroundJobTasks>();
 
-            await appContext.Database.EnsureCreatedAsync();
-            await identityContext.Database.EnsureCreatedAsync();
+            // Apply migrations to ensure database schema is up to date
+            await appContext.Database.MigrateAsync();
+            await identityContext.Database.MigrateAsync();
 
             await RoleSeeder.SeedAsync(scope.ServiceProvider);
             await DemoDataSeeder.SeedAsync(appContext);
