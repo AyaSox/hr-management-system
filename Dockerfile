@@ -14,4 +14,8 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out ./
+EXPOSE 80
 ENTRYPOINT ["dotnet", "HRManagementSystem.dll"]
+
+# Optional healthcheck example:
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl --fail http://localhost:80/health || exit 1
