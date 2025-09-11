@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: hr-management-system
+    env: dotnet
+    buildCommand: dotnet restore && dotnet build
+    startCommand: dotnet run --project HRManagementSystem.csproj
+    plan: free
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: STORAGE_PATH
+        value: /var/storage
+    disk:
+      name: hrm-storage
+      mountPath: /var/storage
+      sizeGB: 1
