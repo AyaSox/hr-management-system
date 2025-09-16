@@ -8,7 +8,7 @@ RUN dotnet restore HRManagementSystem.csproj
 
 # Copy everything else and build
 COPY . ./
-RUN dotnet publish HRManagementSystem.csproj -c Release -o /app/out --no-restore -p:PublishReadyToRun=true -p:UseAppHost=false
+RUN dotnet publish HRManagementSystem.csproj -c Release -o /app/out --no-restore
 
 # Generate runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
