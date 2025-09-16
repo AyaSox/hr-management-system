@@ -190,15 +190,16 @@ app.Lifetime.ApplicationStarted.Register(() =>
         await Task.Delay(1000);
         try
         {
+            // Update database schema first
+            DatabaseUpdater.AddIsDeletedColumn();
+
             using var scope = app.Services.CreateScope();
             var appContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var identityContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var jobs = scope.ServiceProvider.GetRequiredService<IBackgroundJobTasks>();
 
-            // Apply migrations for the application DB (this works properly)
-            await appContext.Database.MigrateAsync();
-
-            // For Identity DB: use EnsureCreated until proper migrations are scaffolded
+            // Apply migrations to ensure database schema is up to date
+            await appContext.Database.EnsureCreatedAsync();
             await identityContext.Database.EnsureCreatedAsync();
 
             await RoleSeeder.SeedAsync(scope.ServiceProvider);
