@@ -1,5 +1,48 @@
+# VCS and IDE
+.git/
+.github/
+.gitattributes
+.gitignore
+.vs/
+.vscode/
+.idea/
+
+# Build outputs
 bin/
 obj/
+out/
+
+# User-specific files
+**/*.user
+**/*.suo
+**/*.csproj.user
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Tests / coverage
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Local databases (don’t ship dev SQLite files)
+*.db
+*.sqlite
+*.sqlite3
+*.db-wal
+*.db-shm
+
+# Node / tooling
+node_modules/
+npm-debug.log*
+
+# Env / compose
+.env
+docker-compose.*
+
+# Docs (not needed in image)
 *.md
-.git/
-.vscode/
+Documentation/
+docs/

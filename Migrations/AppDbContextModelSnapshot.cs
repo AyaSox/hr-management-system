@@ -74,6 +74,9 @@ namespace HRManagementSystem.Migrations
 
                     b.HasKey("DepartmentId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Departments", (string)null);
                 });
 
@@ -120,6 +123,9 @@ namespace HRManagementSystem.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("JobTitle")
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
@@ -140,6 +146,9 @@ namespace HRManagementSystem.Migrations
 
                     b.HasIndex("DepartmentId");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.HasIndex("EmployeeNumber")
                         .IsUnique()
                         .HasFilter("[EmployeeNumber] IS NOT NULL");
@@ -147,6 +156,57 @@ namespace HRManagementSystem.Migrations
                     b.HasIndex("LineManagerId");
 
                     b.ToTable("Employees", (string)null);
+                });
+
+            // StatusChangeRequest entity
+            modelBuilder.Entity("HRManagementSystem.Models.StatusChangeRequest", b =>
+                {
+                    b.Property<int>("StatusChangeRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ApprovalComments")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ApprovedBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ApprovedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FromStatus")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("RequestedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RequestedBy")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ToStatus")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("StatusChangeRequestId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("RequestedDate");
+
+                    b.HasIndex("Status");
+
+                    b.ToTable("StatusChangeRequests", (string)null);
                 });
 
             modelBuilder.Entity("HRManagementSystem.Models.Employee", b =>
@@ -165,6 +225,17 @@ namespace HRManagementSystem.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("LineManager");
+                });
+
+            modelBuilder.Entity("HRManagementSystem.Models.StatusChangeRequest", b =>
+                {
+                    b.HasOne("HRManagementSystem.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("HRManagementSystem.Models.Department", b =>
